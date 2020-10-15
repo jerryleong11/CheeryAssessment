@@ -1,0 +1,180 @@
+﻿@model CheeryAssessment.Models.ExchangeIndexModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Exchange</h2>
+
+<script src="~/Scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var selectedText = $("#ddlRateList").find("option:selected").text();
+        var selectedValue = $("#ddlRateList").val();
+
+        updateRemarkLabel();
+        updateToAmount();
+        HiddenToCurrencyCode();
+
+
+        $("#ddlRateList").change(function () {
+            selectedText = $("#ddlRateList").find("option:selected").text();
+            selectedValue = $("#ddlRateList").val();
+
+            updateRemarkLabel();
+            HiddenToCurrencyCode();
+
+            $("#fromAmount").val("");
+            $("#toAmount").val("");
+        });
+
+        $("#fromAmount").keyup(function () {
+            updateToAmount();
+        });
+
+
+
+        function updateRemarkLabel() {
+            //alert("Selected Text: " + selectedText + " Value: " + selectedValue);
+            var tempRemark = "*1 USD = " + selectedValue + " " + selectedText;
+            $("#spanRemark").text(tempRemark);
+
+            $("#conversion_rate").val(selectedValue);
+        }
+
+        function HiddenToCurrencyCode() {
+            $("#hdnToCurrencycode").val($("#ddlRateList").find("option:selected").text());
+        }
+
+        function updateToAmount() {
+            var vFromAmount = $("#fromAmount").val();
+            var divider = 100000000000000000000000000000;
+            var vToAmount = ((vFromAmount * divider) * (selectedValue * divider)) / (divider * divider);
+            
+            $("#toAmount").val(vToAmount);
+        }
+
+
+        $("#formExchange").submit(function (event) {
+            if ($("#fromAmount").val() > @Model.userBalanceModel.bal_usd) {
+                alert("Exchange amount cannot greater than your balance USD " + @Model.userBalanceModel.bal_usd);
+
+                return false;
+            }
+            else {
+                if (confirm('Are you confirm to exchange ?')) {
+                    return true
+                }
+                else {
+                    event.preventDefault;
+                    return false;
+                }
+            }
+        });
+    });
+</script>
+
+<br />
+<table>
+    <tr>
+        <td>User ID</td>
+        <td>: @Html.DisplayFor(model => model.userBalanceModel.user_id)</td>
+    </tr>
+    <tr>
+        <td>User Name</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.userBalanceModel.UserModel.username)</td>
+    </tr>
+    <tr>
+        <td>Balance (USD)</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.userBalanceModel.bal_usd)</td>
+    </tr>
+    <tr>
+        <td>Balance (MYR)</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.userBalanceModel.bal_myr)</td>
+    </tr>
+    <tr>
+        <td>Balance (AUD)</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.userBalanceModel.bal_aud)</td>
+    </tr>
+    <tr>
+        <td>Balance (SGD)</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.userBalanceModel.bal_sgd)</td>
+    </tr>
+</table>
+
+
+
+<br />
+<br />
+
+<table>
+    <tr>
+        <td width="150px"><b>Currency Code</b></td>
+        <td><b>Rate</b></td>
+    </tr>
+    <tr>
+        <td width="150px">MYR</td>
+        <td>@Html.DisplayFor(m => m.exchangeRateModel.rates.MYR) </td>
+    </tr>
+    <tr>
+        <td width="150px">AUD</td>
+        <td>@Html.DisplayFor(m => m.exchangeRateModel.rates.AUD) </td>
+    </tr>
+    <tr>
+        <td width="150px">SGD</td>
+        <td>@Html.DisplayFor(m => m.exchangeRateModel.rates.SGD) </td>
+    </tr>
+</table>
+
+<br />
+<br />
+
+<div class="row justify-content-md-center">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                @using (Html.BeginForm("Index", "Exchange", FormMethod.Post, new { @id = "formExchange" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.HiddenFor(m => m.exchangeLogModel.from_currency_code, new { Value = "USD" })
+                    @Html.HiddenFor(m => m.exchangeLogModel.conversion_rate, new { @id = "conversion_rate" })
+
+                    <table>
+                        <tr>
+                            <td>
+                                @Html.DropDownListFor(m => m.exchangeLogModel.to_currency_code, new SelectList(Model.exchangeLogModel.avail_currency_code, "Value", "Text"), new { @class = "form-control", @id = "ddlRateList", style = "width:80px;" })
+                                <input type="hidden" id="hdnToCurrencycode" name="ToCurrencyCode" />
+                            </td>
+                            <td>
+                                &nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.exchangeLogModel.from_amount, "", new { @class = "form-control", @id = "fromAmount", style = "width:200px;", @type = "number" })
+                            </td>
+                            <td>
+                                &nbsp;&nbsp;&nbsp;
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.exchangeLogModel.to_amount, "", new { @class = "form-control", @id = "toAmount", style = "width:200px;", @readonly = "readonly" })
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td colspan="3">
+                                <span id="spanRemark"></span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="form-group">
+                        @*<input type="submit" name="submit" class="btn btn-primary" value="Submit" />*@
+                        <input type="submit" name="submit" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

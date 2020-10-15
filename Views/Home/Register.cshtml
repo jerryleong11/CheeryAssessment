@@ -1,0 +1,49 @@
+﻿@model CheeryAssessment.Models.UserModel
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-md-center">
+    <div class="col-md-5">
+        @using (Html.BeginForm("Register", "Home", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.email)
+                @Html.TextBoxFor(m => m.email, "", new { @class = "form-control", @placeholder = "Email" })
+                @Html.ValidationMessageFor(m => m.email, "", new { @class = "badge badge-danger" })
+                @if (ViewBag.error != null)
+                {
+                    <span class="badge badge-danger">@ViewBag.error</span>
+                }
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.username)
+                @Html.TextBoxFor(m => m.username, "", new { @class = "form-control", @placeholder = "Username" })
+                @Html.ValidationMessageFor(m => m.username, "", new { @class = "badge badge-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.mobile_no)
+                @Html.TextBoxFor(m => m.mobile_no, "", new { @class = "form-control", @placeholder = "Mobile No." })
+                @Html.ValidationMessageFor(m => m.mobile_no, "", new { @class = "badge badge-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.password)
+                @Html.PasswordFor(m => m.password, new { @class = "form-control", @placeholder = "Password" })
+                @Html.ValidationMessageFor(m => m.password, "", new { @class = "badge badge-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword)
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confim Password" })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "badge badge-danger" })
+            </div>
+            <div class="form-group">
+                <input type="submit" name="submit" class="btn btn-danger" value="Register" />
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,35 @@
+﻿@model CheeryAssessment.Models.UserModel
+
+@{
+    ViewBag.Title = "ViewProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Profile</h2>
+
+<table>
+    <tr>
+        <td>User ID</td>
+        <td>: @Html.DisplayFor(model => model.id)</td>
+    </tr>
+    <tr>
+        <td>User Name</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.username)</td>
+    </tr>
+    <tr>
+        <td>Balance (USD)</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.UserBalanceModel.bal_usd)</td>
+    </tr>
+    <tr>
+        <td>Balance (MYR)</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.UserBalanceModel.bal_myr)</td>
+    </tr>
+    <tr>
+        <td>Balance (AUD)</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.UserBalanceModel.bal_aud)</td>
+    </tr>
+    <tr>
+        <td>Balance (SGD)</td>
+        <td>&nbsp;: @Html.DisplayFor(model => model.UserBalanceModel.bal_sgd)</td>
+    </tr>
+</table>
